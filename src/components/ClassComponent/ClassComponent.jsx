@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 export class ClassComponent extends React.Component {
   state = {
-    result: 'Результат',
+    result: 'Введите число от 0 до 10',
     userNumber: '',
     randomNumber:
       Math.floor((Math.random() * this.props.max - this.props.min)) +
@@ -16,57 +16,62 @@ export class ClassComponent extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    this.setState(state => ({
-      count: state.count + 1,
-    }));
+    if (!this.state.isOver) {
+      this.setState(state => ({
+        count: state.count + 1,
+      }));
 
-    this.setState(state => {
-      if (!state.userNumber) {
+      this.setState(state => {
+        if (!state.userNumber || state.userNumber > 10 ||
+            state.userNumber < 0) {
+          return {
+            result: 'Введите число от 0 до 10',
+          };
+        }
+
+        if (state.userNumber > state.randomNumber) {
+          return {
+            result: `${state.userNumber} больше загаданного`,
+          };
+        }
+
+        if (state.userNumber < state.randomNumber) {
+          return {
+            result: `${state.userNumber} меньше загаданного`,
+          };
+        }
+
         return {
-          result: 'Введите число',
+          result: `Вы угадали, загаданное число ${state.userNumber},
+          попыток ${state.count}`,
+          isOver: true,
         };
-      }
-
-      if (state.userNumber > state.randomNumber) {
-        return {
-          result: `${state.userNumber} больше загаданного`,
-        };
-      }
-
-      if (state.userNumber < state.randomNumber) {
-        return {
-          result: `${state.userNumber} меньше загаданного`,
-        };
-      }
-
-      return {
-        result: `Вы угадали, загаданное число ${state.userNumber},
-        попыток ${state.count}`,
-        isOver: true,
-      };
-    }, () => {
-      this.setState({
-        userNumber: '',
+      }, () => {
+        this.setState({
+          userNumber: '',
+        });
       });
-    });
+    }
+
+    if (this.state.isOver) {
+      this.setState({
+        result: 'Введите число от 0 до 10',
+        userNumber: '',
+        randomNumber:
+        Math.floor((Math.random() * this.props.max - this.props.min)) +
+          this.props.min,
+        count: 0,
+        isOver: false,
+      });
+    }
   };
 
   handleChange = e => {
-    this.setState({
-      userNumber: e.target.value,
-    });
-  };
-
-  handleResetGame = () => {
-    this.setState({
-      result: 'Результат',
-      userNumber: '',
-      randomNumber:
-      Math.floor((Math.random() * this.props.max - this.props.min)) +
-        this.props.min,
-      count: 0,
-      isOver: false,
-    });
+    if (!this.state.isOver) {
+      this.setState({
+        userNumber: e.target.value,
+      });
+    }
   };
 
   render() {
@@ -87,16 +92,10 @@ export class ClassComponent extends React.Component {
             autoFocus
           />
 
-          <button className={style.btn}>Угадать</button>
-        </form>
-        {this.state.isOver && (
-          <button
-            className={style.btn}
-            type='button'
-            onClick={this.handleResetGame}>
-            Сыграть еще
+          <button className={style.btn}>
+            {this.state.isOver ? 'Сыграть еще' : 'Угадать'}
           </button>
-        )}
+        </form>
       </div>
     );
   }
