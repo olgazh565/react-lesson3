@@ -23,7 +23,7 @@ export class ClassComponent extends React.Component {
 
       this.setState(state => {
         if (!state.userNumber || state.userNumber > 10 ||
-            state.userNumber < 0) {
+          state.userNumber < 0) {
           return {
             result: 'Введите число от 0 до 10',
           };
@@ -58,7 +58,7 @@ export class ClassComponent extends React.Component {
         result: 'Введите число от 0 до 10',
         userNumber: '',
         randomNumber:
-        Math.floor((Math.random() * this.props.max - this.props.min)) +
+          Math.floor((Math.random() * this.props.max - this.props.min)) +
           this.props.min,
         count: 0,
         isOver: false,
@@ -67,11 +67,9 @@ export class ClassComponent extends React.Component {
   };
 
   handleChange = e => {
-    if (!this.state.isOver) {
-      this.setState({
-        userNumber: e.target.value,
-      });
-    }
+    this.setState({
+      userNumber: e.target.value,
+    });
   };
 
   render() {
@@ -90,6 +88,7 @@ export class ClassComponent extends React.Component {
             onChange={this.handleChange}
             value={this.state.userNumber}
             autoFocus
+            disabled={this.state.isOver}
           />
 
           <button className={style.btn}>
