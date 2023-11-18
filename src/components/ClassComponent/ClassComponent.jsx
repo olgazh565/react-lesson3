@@ -17,10 +17,6 @@ export class ClassComponent extends React.Component {
     e.preventDefault();
 
     if (!this.state.isOver) {
-      this.setState(state => ({
-        count: state.count + 1,
-      }));
-
       this.setState(state => {
         if (!state.userNumber || state.userNumber > 10 ||
           state.userNumber < 0) {
@@ -31,24 +27,34 @@ export class ClassComponent extends React.Component {
 
         if (state.userNumber > state.randomNumber) {
           return {
+            count: state.count + 1,
             result: `${state.userNumber} больше загаданного`,
           };
         }
 
         if (state.userNumber < state.randomNumber) {
           return {
+            count: state.count + 1,
             result: `${state.userNumber} меньше загаданного`,
           };
         }
 
         return {
-          result: `Вы угадали, загаданное число ${state.userNumber},
-          попыток ${state.count}`,
+          count: state.count + 1,
           isOver: true,
         };
       }, () => {
-        this.setState({
-          userNumber: '',
+        this.setState(state => {
+          if (state.isOver) {
+            return {
+              result: `Вы угадали, загаданное число ${state.userNumber},
+              попыток ${state.count}`,
+              userNumber: '',
+            };
+          }
+          return {
+            userNumber: '',
+          };
         });
       });
     }
